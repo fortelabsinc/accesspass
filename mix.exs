@@ -21,7 +21,7 @@ defmodule AccessPass.Mixfile do
       ],
       version: "1.0.3",
       description:
-        "Provides a full user authentication experience for an API. 
+        "Provides a full user authentication experience for an API.
       Includes login,logout,register,forgot password, forgot username, confirmation email and all that other good stuff.
       Includes plug for checking for authenticated users and macro for generating the required routes.",
       elixir: "~> 1.4",
@@ -38,14 +38,15 @@ defmodule AccessPass.Mixfile do
 
   defp deps do
     [
-      {:bamboo, "~> 0.8"},
-      {:ecto, ">= 2.0.4"},
+      {:bamboo, "~> 1.5"},
+      {:ecto, ">= 3.4"},
       {:plug, "~> 1.0"},
       {:ex_doc, ">= 0.0.19", only: :dev, runtime: false},
       {:gettext, "~> 0.11"},
-      {:comeonin, "~> 2.0"},
-      {:poison, ">= 0.0.0"},
-      {:postgrex, ">= 0.0.0"}
+      {:comeonin, "~> 5.3"},
+      {:poison, ">= 4.0"},
+      {:postgrex, ">= 0.0.0"},
+      {:argon2_elixir, "~> 2.3"}
     ]
   end
 

@@ -27,7 +27,7 @@ defmodule AccessPass.Users do
     timestamps()
   end
 
-  @required_fields [:username, :email, :password, :password_confirm,]
+  @required_fields [:username, :email, :password, :password_confirm]
   @optional_fields [:confirm_id, :meta, :password_reset_key, :password_reset_expire]
   def genId() do
     Ecto.UUID.generate() |> Base.encode64(padding: false)
@@ -115,7 +115,7 @@ defmodule AccessPass.Users do
   def add_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-        put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(pass))
+        put_change(changeset, :password_hash, Comeonin.Argon2.hashpwsalt(pass))
 
       _ ->
         changeset

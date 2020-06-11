@@ -25,7 +25,27 @@ defmodule AccessPass.GateKeeper do
          user.user_id,
          token_body,
          refresh_expire_in()
-       ) |> overrides_mod().login_return(user)} 
+       )
+       |> overrides_mod().login_return(user)}
+    else
+      {:error, changeset} ->
+        {:error, changeset |> Ecto.Changeset.traverse_errors(&translate_error/1)}
+
+      _ ->
+        {:error, "error registering account"}
+    end
+  end
+
+  def no_email_register(user_obj) do
+    with {:ok, user} <- create_and_insert(user_obj),
+         {:ok, token_body} <- overrides_mod().after_login(user) do
+      {:ok,
+       RefreshToken.add(
+         user.user_id,
+         token_body,
+         refresh_expire_in()
+       )
+       |> overrides_mod().login_return(user)}
     else
       {:error, changeset} ->
         {:error, changeset |> Ecto.Changeset.traverse_errors(&translate_error/1)}
@@ -60,10 +80,14 @@ defmodule AccessPass.GateKeeper do
     AccessToken.revoke(access_token)
   end
 
-  def change_password(password_id, new_password,password_confirm) do
+  def change_password(password_id, new_password, password_confirm) do
     with %Users{} = user <- repo().get_by(Users, password_reset_key: password_id),
          {:ok, %AccessPass.Users{}} <-
-           AccessPass.Users.update_password(user, %{password: new_password, password_confirm: password_confirm}) |> repo().update() do
+           AccessPass.Users.update_password(user, %{
+             password: new_password,
+             password_confirm: password_confirm
+           })
+           |> repo().update() do
       {:ok}
     else
       {:error, changeset} ->
@@ -95,7 +119,6 @@ defmodule AccessPass.GateKeeper do
   end
 
   def log_in(username, password) do
-    
     with {:ok, user} <- login(username, password),
          {:ok, token_body} <- overrides_mod().after_login(user) do
       {:ok,
@@ -103,7 +126,8 @@ defmodule AccessPass.GateKeeper do
          user.user_id,
          token_body,
          refresh_expire_in()
-       ) |> overrides_mod().login_return(user)}
+       )
+       |> overrides_mod().login_return(user)}
     else
       {:error} -> {:error, "username or password is incorrect"}
       _ -> {:error, "error with login endpoint"}
@@ -128,17 +152,22 @@ defmodule AccessPass.GateKeeper do
 
   def confirm(confirm_id) do
     with %AccessPass.Users{
-      confirmed: false
-      } = user <- repo().get_by(Users, confirm_id: confirm_id),
+           confirmed: false
+         } = user <- repo().get_by(Users, confirm_id: confirm_id),
          {:ok, _} <- Users.update_key(user, :confirmed, true) |> repo().update(),
          {:ok} <- overrides_mod().after_confirm(user) do
-      {:ok, RefreshToken.add(user.user_id,%{
+      {:ok,
+       RefreshToken.add(
+         user.user_id,
+         %{
            user_id: user.user_id,
            email_confirmed: true,
            email: user.email,
            username: user.username,
            meta: user.meta
-         },refresh_expire_in())}
+         },
+         refresh_expire_in()
+       )}
     else
       _ -> {:error, "email confirmation failed"}
     end
@@ -163,7 +192,7 @@ defmodule AccessPass.GateKeeper do
   end
 
   # Private functions
-  # ===================================================== 
+  # =====================================================
   defp create_and_insert(user_obj) do
     Users.create_user_changeset(user_obj)
     |> overrides_mod().insert_override(user_obj)
@@ -173,8 +202,11 @@ defmodule AccessPass.GateKeeper do
   defp login_query(username) do
     from(
       u in Users,
-      where: fragment("lower(?)", u.username) == fragment("lower(?)", ^username) or fragment("lower(?)", u.email) == fragment("lower(?)", ^username)
-    ) |> repo().one
+      where:
+        fragment("lower(?)", u.username) == fragment("lower(?)", ^username) or
+          fragment("lower(?)", u.email) == fragment("lower(?)", ^username)
+    )
+    |> repo().one
   end
 
   defp login(username, password) do

@@ -68,6 +68,42 @@ defmodule AccessPass do
   defdelegate register(user_obj), to: GateKeeper, as: :register
 
   @doc """
+    Register a new user but does not send an email
+
+  Returns `{"ok":
+            {
+              "type":"TYPE",
+              "refresh_token":"refresh token",
+              "refresh_expire_in": seconds,
+              "access_token":"access_token",
+              "access_expire_in": seconds
+            }
+          }`
+
+  ## Examples
+
+      AccessPass.register(%{
+        username: "example",
+        password: "otherexample",
+        password_confirm: "otherexample",
+        email: "example@email.com",
+        meta: {
+          coolInfo: "stored in here"
+        }
+      })
+      {"ok":
+      {
+        "type":"basic",
+        "refresh_token":"MjNmYzgzNGMtMGM3MS00YTA4LTkxMWMtNDEyODU3Yzk2ZTgy",
+        "refresh_expire_in":1200,
+        "access_token":"ODhhMDgzYjctZTE3OC00YjgyLWFiZGMtZTJjOWZiMzJjODhi",
+        "access_expire_in":600
+      }
+      }
+  """
+  defdelegate no_email_register(user_obj), to: GateKeeper, as: :no_email_register
+
+  @doc """
   Marks a user email confirmed based on the given confirm_id
 
   Returns `{:ok, {
@@ -198,5 +234,7 @@ defmodule AccessPass do
       {:ok}
 
   """
-  defdelegate change_password(password_id, new_password,password_confirm), to: GateKeeper, as: :change_password
+  defdelegate change_password(password_id, new_password, password_confirm),
+    to: GateKeeper,
+    as: :change_password
 end

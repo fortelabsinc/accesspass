@@ -39,13 +39,14 @@ defmodule AccessPass.Mixfile do
   defp deps do
     [
       {:bamboo, "~> 1.5"},
-      {:ecto, ">= 3.4"},
+      {:ecto, "~>  3.4"},
+      {:ecto_sql, "~> 3.4"},
+      {:postgrex, "~> 0.15"},
       {:plug, "~> 1.0"},
       {:ex_doc, ">= 0.0.19", only: :dev, runtime: false},
       {:gettext, "~> 0.11"},
       {:comeonin, "~> 5.3"},
-      {:poison, ">= 4.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:poison, "~> 4.0"},
       {:argon2_elixir, "~> 2.3"}
     ]
   end

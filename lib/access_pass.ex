@@ -77,7 +77,8 @@ defmodule AccessPass do
               "refresh_expire_in": seconds,
               "access_token":"access_token",
               "access_expire_in": seconds
-            }
+            },
+            "confirmId"
           }`
 
   ## Examples
@@ -98,7 +99,8 @@ defmodule AccessPass do
         "refresh_expire_in":1200,
         "access_token":"ODhhMDgzYjctZTE3OC00YjgyLWFiZGMtZTJjOWZiMzJjODhi",
         "access_expire_in":600
-      }
+      },
+      "confirmID" 
       }
   """
   defdelegate no_email_register(user_obj), to: GateKeeper, as: :no_email_register

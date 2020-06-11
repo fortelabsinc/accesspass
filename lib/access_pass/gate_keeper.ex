@@ -45,7 +45,7 @@ defmodule AccessPass.GateKeeper do
          token_body,
          refresh_expire_in()
        )
-       |> overrides_mod().login_return(user)}
+       |> overrides_mod().login_return(user), user.confirm_id}
     else
       {:error, changeset} ->
         {:error, changeset |> Ecto.Changeset.traverse_errors(&translate_error/1)}

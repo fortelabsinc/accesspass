@@ -115,7 +115,7 @@ defmodule AccessPass.Users do
   def add_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-        put_change(changeset, :password_hash, Comeonin.Argon2.hashpwsalt(pass))
+        put_change(changeset, :password_hash, Argon2.hash_pwd_salt(pass))
 
       _ ->
         changeset

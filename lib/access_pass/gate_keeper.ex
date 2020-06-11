@@ -211,7 +211,7 @@ defmodule AccessPass.GateKeeper do
 
   defp login(username, password) do
     with %Users{} = user <- login_query(username),
-         true <- Comeonin.Argon2.check_pass(password, user.password_hash),
+         true <- Argon2.check_pass(password, user.password_hash),
          {:ok, user} <-
            user
            |> Users.inc(:successful_login_attempts, user.successful_login_attempts)

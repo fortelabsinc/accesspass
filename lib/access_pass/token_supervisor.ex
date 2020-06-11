@@ -13,6 +13,6 @@ defmodule AccessPass.TokenSupervisor do
     ]
 
     opts = [strategy: :rest_for_one, name: AccessPass.SubSupervisor]
-    supervise(children, opts)
+    Supervisor.init(children, opts)
   end
 end

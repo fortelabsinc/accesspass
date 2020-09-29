@@ -65,7 +65,6 @@ defmodule AccessPass do
   defdelegate register(user_obj), to: GateKeeper, as: :register
 
   @doc """
-<<<<<<< HEAD
     Register a new user but does not send an email
 
   Returns `{"ok":
@@ -102,7 +101,8 @@ defmodule AccessPass do
       }
   """
   defdelegate no_email_register(user_obj), to: GateKeeper, as: :no_email_register
-=======
+
+  @doc """
     Resends confirmation email
 
   Returns `{"ok": "confirmation email resent"}`
@@ -113,7 +113,6 @@ defmodule AccessPass do
       {"ok": "confirmation email resent"}
   """
   defdelegate resend_confirm(username), to: GateKeeper, as: :resend_confirm
->>>>>>> 4ef0ffeade8fa3d907374a18715a0950f83fb55f
 
   @doc """
   Marks a user email confirmed based on the given confirm_id

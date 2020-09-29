@@ -33,7 +33,6 @@ defmodule AccessPass do
 
   @doc """
     Register a new user
-
   Returns `{"ok":
             {
               "type":"TYPE",
@@ -43,9 +42,7 @@ defmodule AccessPass do
               "access_expire_in": seconds
             }
           }`
-
   ## Examples
-
       AccessPass.register(%{
         username: "example",
         password: "otherexample",
@@ -83,7 +80,7 @@ defmodule AccessPass do
 
   ## Examples
 
-      AccessPass.register(%{
+      AccessPass.no_email_register(%{
         username: "example",
         password: "otherexample",
         password_confirm: "otherexample",
@@ -100,7 +97,7 @@ defmodule AccessPass do
         "access_token":"ODhhMDgzYjctZTE3OC00YjgyLWFiZGMtZTJjOWZiMzJjODhi",
         "access_expire_in":600
       },
-      "confirmID" 
+      "confirmID"
       }
   """
   defdelegate no_email_register(user_obj), to: GateKeeper, as: :no_email_register

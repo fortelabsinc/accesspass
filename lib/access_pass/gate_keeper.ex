@@ -223,6 +223,7 @@ defmodule AccessPass.GateKeeper do
 
   defp login(username, password) do
     with %Users{} = user <- login_query(username),
+         true <- user.confirmed,
          true <- Argon2.verify_pass(password, user.password_hash),
          {:ok, user} <-
            user
